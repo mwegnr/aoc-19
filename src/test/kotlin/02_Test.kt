@@ -18,7 +18,7 @@ internal class DayTwoTest {
 
     @Test
     fun determineInputTest() {
-        // TODO: write correct test
+        // test is omitted because it would need at least 100 array entries
     }
 
 }
