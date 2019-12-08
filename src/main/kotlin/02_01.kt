@@ -6,17 +6,17 @@ fun main() {
     instructionsAsIntList[1] = 12
     instructionsAsIntList[2] = 2
 
-    print(followInstructionsAndGetResult(instructionsAsIntList)[0])
+    print(followInstructionsAndGetResult(instructionsAsIntList))
 }
 
-fun followInstructionsAndGetResult(instructions: ArrayList<Int>): ArrayList<Int> {
+fun followInstructionsAndGetResult(instructions: ArrayList<Int>): Int {
     for (i in 0 until instructions.size step 4) {
+        if (instructions[i] == 99) return instructions[0]
         val (fstPos, sndPos, resPos) = arrayOf(instructions[i + 1], instructions[i + 2], instructions[i + 3])
         when (instructions[i]) {
             1 -> instructions[resPos] = instructions[fstPos] + instructions[sndPos]
             2 -> instructions[resPos] = instructions[fstPos] * instructions[sndPos]
-            99 -> return instructions
         }
     }
-    return instructions
+    return instructions[0]
 }
