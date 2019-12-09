@@ -22,12 +22,12 @@ val start = Point(0, 0)
 val fstWireDirectionsList = ArrayList<Move>(getInputLine(DAY_OF_MONTH, 0).split(",").map { Move.fromString(it) })
 val sndWireDirectionsList = ArrayList<Move>(getInputLine(DAY_OF_MONTH, 1).split(",").map { Move.fromString(it) })
 
-val fstPath = computePathForDirections(fstWireDirectionsList)
-val sndPath = computePathForDirections(sndWireDirectionsList)
-
-val sharedPoints = fstPath.intersect(sndPath).toHashSet()
-
 fun main() {
+    val fstPath = computePathForDirections(fstWireDirectionsList)
+    val sndPath = computePathForDirections(sndWireDirectionsList)
+
+    val sharedPoints = fstPath.intersect(sndPath).toHashSet()
+
     println(computeClosestSharedPoint(sharedPoints).getDistanceToCenter())
 }
 

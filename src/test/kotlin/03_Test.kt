@@ -19,7 +19,7 @@ internal class DayThreeTest {
     private val testMove3 = Move("L", 4)
     private val testMove4 = Move("D", 3)
 
-    private val firstPath = hashSetOf(
+    private val firstPath = arrayListOf(
             start, Point(1, 0),
             Point(2, 0), Point(3, 0),
             Point(4, 0), Point(5, 0),
@@ -31,7 +31,7 @@ internal class DayThreeTest {
             Point(6, 2), Point(6, 1),
             Point(6, 0), Point(6, -1))
 
-    private val secondPath = hashSetOf(
+    private val secondPath = arrayListOf(
             Point(0, 0), Point(0, 1),
             Point(0, 2), Point(-1, 2),
             Point(-2, 2), Point(-3, 2),
@@ -43,6 +43,7 @@ internal class DayThreeTest {
             Point(3, -1), Point(4, -1),
             Point(5, -1), Point(6, -1))
 
+    // 03_01 Tests
     @Test
     fun moveFromStringTest() {
         val testString1 = "R10"
@@ -56,6 +57,15 @@ internal class DayThreeTest {
         assertEquals(testMove3, Move.fromString(testString3))
         assertEquals(testMove4, Move.fromString(testString4))
         assertNull(Move.fromString(testString5))
+    }
+
+    @Test
+    fun computePathForDirectionsTest() {
+        val directionList1 = arrayListOf(testMove1, testMove2, testMove3, testMove4)
+        val directionList2 = arrayListOf(testMove2, testMove3, testMove4, testMove1)
+
+        assertEquals(firstPath.toHashSet(), computePathForDirections(directionList1))
+        assertEquals(secondPath.toHashSet(), computePathForDirections(directionList2))
     }
 
     @Test
@@ -82,15 +92,6 @@ internal class DayThreeTest {
     }
 
     @Test
-    fun computePathForDirectionsTest() {
-        val directionList1 = arrayListOf(testMove1, testMove2, testMove3, testMove4)
-        val directionList2 = arrayListOf(testMove2, testMove3, testMove4, testMove1)
-
-        assertEquals(firstPath, computePathForDirections(directionList1))
-        assertEquals(secondPath, computePathForDirections(directionList2))
-    }
-
-    @Test
     fun fstExerciseTest() {
         val fstWireDirections1 = ArrayList<Move>(fstWireTestInput1.split(",").map { Move.fromString(it) })
         val sndWireDirections1 = ArrayList<Move>(sndWireTestInput1.split(",").map { Move.fromString(it) })
@@ -109,37 +110,86 @@ internal class DayThreeTest {
     }
 
     @Test
-    fun sndExerciseTest() {
-        val fstWireDirections1 = ArrayList<Move>(fstWireTestInput1.split(",").map { Move.fromString(it) })
-        val sndWireDirections1 = ArrayList<Move>(sndWireTestInput1.split(",").map { Move.fromString(it) })
-
-        val fstWireDirections2 = ArrayList<Move>(fstWireTestInput2.split(",").map { Move.fromString(it) })
-        val sndWireDirections2 = ArrayList<Move>(sndWireTestInput2.split(",").map { Move.fromString(it) })
-
-        val fstPath1 = computePathForDirections(fstWireDirections1)
-        val sndPath1 = computePathForDirections(sndWireDirections1)
-
-        val fstPath2 = computePathForDirections(fstWireDirections2)
-        val sndPath2 = computePathForDirections(sndWireDirections2)
-
-        val sharedPoints1 = fstPath1.intersect(sndPath1).toHashSet()
-        val sharedPoints2 = fstPath2.intersect(sndPath2).toHashSet()
-
-        sharedPoints1.remove(start)
-        sharedPoints2.remove(start)
-
-        val minDistancePoint1 = computeMinDistancePoint(sharedPoints1, fstPath1, sndPath1)
-        val minDistancePoint2 = computeMinDistancePoint(sharedPoints2, fstPath2, sndPath2)
-
-        assertEquals(610, getMinCombinedDistance(minDistancePoint1, fstPath1, sndPath1))
-        assertEquals(410, getMinCombinedDistance(minDistancePoint2, fstPath2, sndPath2))
-    }
-
-    @Test
     fun getManhattanDistanceTest() {
         assertEquals(0, testPoint1.getDistanceToCenter())
         assertEquals(12, testPoint2.getDistanceToCenter())
         assertEquals(7, testPoint3.getDistanceToCenter())
         assertEquals(20, testPoint4.getDistanceToCenter())
     }
+
+    // 03_02 Tests
+    @Test
+    fun computePathForMoveWithStepsTest() {
+        val resultMap1 = HashMap<Int, Point>()
+        resultMap1[1] = Point(1, 0)
+        resultMap1[2] = Point(2, 0)
+        resultMap1[3] = Point(3, 0)
+        resultMap1[4] = Point(4, 0)
+        resultMap1[5] = Point(5, 0)
+        resultMap1[6] = Point(6, 0)
+        resultMap1[7] = Point(7, 0)
+        resultMap1[8] = Point(8, 0)
+        resultMap1[9] = Point(9, 0)
+        resultMap1[10] = Point(10, 0)
+        val resultMap2 = HashMap<Int, Point>()
+        resultMap2[1] = Point(6, 7)
+        resultMap2[2] = Point(6, 8)
+        val resultMap3 = HashMap<Int, Point>()
+        resultMap3[1] = Point(2, 4)
+        resultMap3[2] = Point(1, 4)
+        resultMap3[3] = Point(0, 4)
+        resultMap3[4] = Point(-1, 4)
+        val resultMap4 = HashMap<Int, Point>()
+        resultMap4[1] = Point(12, 7)
+        resultMap4[2] = Point(12, 6)
+        resultMap4[3] = Point(12, 5)
+
+        assertEquals(resultMap1, computePathForMoveWithSteps(testPoint1, 0, testMove1))
+        assertEquals(resultMap2, computePathForMoveWithSteps(testPoint2, 0, testMove2))
+        assertEquals(resultMap3, computePathForMoveWithSteps(testPoint3, 0, testMove3))
+        assertEquals(resultMap4, computePathForMoveWithSteps(testPoint4, 0, testMove4))
+    }
+
+    @Test
+    fun computePathForDirectionsWithStepsTest() {
+        val directionList1 = arrayListOf(testMove1, testMove2, testMove3, testMove4)
+        val directionList2 = arrayListOf(testMove2, testMove3, testMove4, testMove1)
+
+        val firstPathHashMap = HashMap<Int, Point>()
+        firstPath.forEachIndexed{i, it -> firstPathHashMap[i] = it}
+        val secondPathHashMap = HashMap<Int, Point>()
+        secondPath.forEachIndexed{i, it -> secondPathHashMap[i] = it}
+
+        assertEquals(firstPathHashMap, computePathForDirectionsWithSteps(directionList1))
+        assertEquals(secondPathHashMap, computePathForDirectionsWithSteps(directionList2))
+    }
+
+
+//
+//    @Test
+//    fun sndExerciseTest() {
+//        val fstWireDirections1 = ArrayList<Move>(fstWireTestInput1.split(",").map { Move.fromString(it) })
+//        val sndWireDirections1 = ArrayList<Move>(sndWireTestInput1.split(",").map { Move.fromString(it) })
+//
+//        val fstWireDirections2 = ArrayList<Move>(fstWireTestInput2.split(",").map { Move.fromString(it) })
+//        val sndWireDirections2 = ArrayList<Move>(sndWireTestInput2.split(",").map { Move.fromString(it) })
+//
+//        val fstPath1 = computePathForDirections(fstWireDirections1)
+//        val sndPath1 = computePathForDirections(sndWireDirections1)
+//
+//        val fstPath2 = computePathForDirections(fstWireDirections2)
+//        val sndPath2 = computePathForDirections(sndWireDirections2)
+//
+//        val sharedPoints1 = fstPath1.intersect(sndPath1).toHashSet()
+//        val sharedPoints2 = fstPath2.intersect(sndPath2).toHashSet()
+//
+//        sharedPoints1.remove(start)
+//        sharedPoints2.remove(start)
+//
+//        val minDistancePoint1 = computeMinDistancePoint(sharedPoints1, fstPath1, sndPath1)
+//        val minDistancePoint2 = computeMinDistancePoint(sharedPoints2, fstPath2, sndPath2)
+//
+//        assertEquals(610, getMinCombinedDistance(minDistancePoint1, fstPath1, sndPath1))
+//        assertEquals(410, getMinCombinedDistance(minDistancePoint2, fstPath2, sndPath2))
+//    }
 }
